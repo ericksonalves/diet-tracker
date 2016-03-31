@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Diet Tracker</string>
+    <string name="action_about">Sobre</string>
+    <string name="action_settings">Configurações</string>
+    <string name="add_meal">Adicionar Refeição</string>
+    <string name="meal_name">Nome</string>
+    <string name="meal_calories">Calorias</string>
+    <string name="confirm">Confirmar</string>
+    <string name="welcome">Olá! Bem-vindo ao Diet Tracker</string>
+    <string name="amount_of_calories">Você já consumiu %1$s de %2$s calorias diárias</string>
+</resources>
