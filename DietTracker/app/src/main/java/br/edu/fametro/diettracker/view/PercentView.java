@@ -27,20 +27,20 @@ public class PercentView extends View {
 
     public PercentView(Context context) {
         super(context);
-        init();
+        init(true);
     }
 
     public PercentView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(true);
     }
 
     public PercentView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
+        init(true);
     }
 
-    public void init() {
+    public void init(boolean fromZero) {
         mForegroundPaint = new Paint();
         mForegroundPaint.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
         mForegroundPaint.setAntiAlias(true);
@@ -50,8 +50,8 @@ public class PercentView extends View {
         mBackgroundPaint.setAntiAlias(true);
         mBackgroundPaint.setStyle(Paint.Style.FILL);
         mRectangle = new RectF();
-        mCurrentPercentage = 0.0f;
-        ValueAnimator animator = ValueAnimator.ofFloat(0.0f, mFinalPercentage);
+        mCurrentPercentage = fromZero ? 0.0f : mCurrentPercentage;
+        ValueAnimator animator = ValueAnimator.ofFloat(mCurrentPercentage, mFinalPercentage);
         animator.setDuration(ANIMATION_DURATION);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -69,7 +69,7 @@ public class PercentView extends View {
         int left = 0, width = getWidth(), top = 0;
         mRectangle.set(left, top, left + width, top + width);
         canvas.drawArc(mRectangle, MINIMUM_OFFSET, MAXIMUM_OFFSET, true, mBackgroundPaint);
-        if (mCurrentPercentage != 0) {
+        if (mCurrentPercentage != 0.0f) {
             canvas.drawArc(mRectangle, MINIMUM_OFFSET, (OFFSET_FACTOR * mCurrentPercentage), true, mForegroundPaint);
         }
     }
@@ -81,7 +81,7 @@ public class PercentView extends View {
 
     public void setFinalPercentage(float percentage) {
         mFinalPercentage = percentage;
-        init();
+        init(false);
         invalidate();
     }
 }

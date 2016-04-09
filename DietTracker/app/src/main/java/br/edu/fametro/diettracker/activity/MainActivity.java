@@ -1,20 +1,28 @@
 package br.edu.fametro.diettracker.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.github.mikephil.charting.charts.PieChart;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import br.edu.fametro.diettracker.R;
+import br.edu.fametro.diettracker.controller.Controller;
 import br.edu.fametro.diettracker.database.DatabaseHelper;
 import br.edu.fametro.diettracker.dialog.AddMealDialog;
-import br.edu.fametro.diettracker.view.PercentView;
+import br.edu.fametro.diettracker.util.Utils;
 
 /**
  * Atividade principal da aplicação
@@ -22,15 +30,12 @@ import br.edu.fametro.diettracker.view.PercentView;
 
 public class MainActivity extends AppCompatActivity {
 
-    /* Constante para a quantidade máxima de calorias a serem ingeridas no dia */
-    private static final int TOTAL_CALORIES = 500;
-
     /* Botão de adicionar refeição do canto inferior direito */
     private FloatingActionButton mAddMealButton;
-    /* Gráfico da quantidade de calorias já consumida no dia */
-    private PercentView mCaloriesPercentageView;
     /* Texto dizendo a quantidade de calorias já consumida no dia */
     private TextView mAmountOfCaloriesTextView;
+    /* Gráfico da quantidade de calorias já consumida no dia */
+    private PieChart mChart;
     /* Classe que representa o manipulador do banco de dados */
     private DatabaseHelper mDbHelper;
 
@@ -47,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
         /* Inicialização dos componentes visuais da atividade */
         mAddMealButton = (FloatingActionButton) findViewById(R.id.floating_action_button_add_meal);
-        mCaloriesPercentageView = (PercentView) findViewById(R.id.view_calories_percentage);
         mAmountOfCaloriesTextView = (TextView) findViewById(R.id.text_view_amount_of_calories);
+        mChart = (PieChart) findViewById(R.id.chart_calories);
 
         /* Inicialização do manipulador do banco de dados */
         mDbHelper = new DatabaseHelper(getApplicationContext());
@@ -72,11 +77,11 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
             /* Item configurações */
             case R.id.action_settings:
-                Toast.makeText(getApplicationContext(), "Settings", Toast.LENGTH_SHORT).show();
+                callChartsActivity();
                 break;
             /* Item sobre */
             case R.id.action_about:
-                Toast.makeText(getApplicationContext(), "About", Toast.LENGTH_SHORT).show();
+                callAboutActivity();
                 break;
             default:
                 break;
@@ -91,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         /* Chamada da atribuição de escutadores */
         assignListeners();
+        /* Chamada da atualização do gráfico */
+        prepareChart();
         /* Chamada da atualização de calorias consumidas */
         updateCalories();
     }
@@ -110,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 /* Instanciação do diálogo */
-                AddMealDialog dialog = new AddMealDialog(getApplicationContext());
+                AddMealDialog dialog = new AddMealDialog(MainActivity.this);
                 /* Mostrar diálogo */
                 dialog.show();
                 /* Configurar um escutador para quando o diálogo for fechado */
@@ -126,20 +133,51 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /* Método para chamar a atividade Sobre */
+    private void callAboutActivity() {
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
+    }
+
+    /* Método para chamar a atividade Gráficos */
+    private void callChartsActivity() {
+        Intent intent = new Intent(this, ChartsActivity.class);
+        startActivity(intent);
+    }
+
     /* Método para desassociar os escutadores na atividade */
     private void dissociateListeners() {
         /* Liberação do escutador de clique do botão de adicionar refeição */
         mAddMealButton.setOnClickListener(null);
     }
 
+    private void prepareChart() {
+        Utils.preparePieChart(mChart, getString(R.string.calories_chart_center_text));
+    }
+
     /* Método para atualizar a quantidade de calorias consumidas no texto e no gráfico */
     private void updateCalories() {
         /* Atualização dos valores de calorias consumidas pelo banco de dados */
-        int calories = mDbHelper.read();
+        int calories = mDbHelper.getDailyCalories(Utils.getCurrentDateTime(true));
+        int totalCalories = Controller.getInstance().getTotalCalories();
         /* Atualização do texto da quantidade de calorias consumidas */
-        mAmountOfCaloriesTextView.setText(String.format(getString(R.string.amount_of_calories), calories, TOTAL_CALORIES));
+        mAmountOfCaloriesTextView.setText(String.format(getString(R.string.amount_of_calories), calories,
+                totalCalories));
         /* Atualização do gráfico de calorias consumidas */
-        /* TODO: Atualizar esse valor de forma menos forçada */
-        mCaloriesPercentageView.setFinalPercentage(calories * 100 / TOTAL_CALORIES);
+        updateChartData(calories, totalCalories);
+    }
+
+    /* Método para atualizar o gráfico de consumo */
+    private void updateChartData(int calories, int totalCalories) {
+        List<String> x = new ArrayList<>();
+        x.add(getString(R.string.consumed));
+        x.add(getString(R.string.to_consume));
+        List<Integer> y = new ArrayList<>();
+        y.add(calories);
+        y.add(totalCalories);
+        ArrayList<Integer> colors = new ArrayList<>();
+        colors.add(ContextCompat.getColor(this, R.color.colorAccent));
+        colors.add(Color.BLACK);
+        Utils.setChartData(mChart, x, y, getString(R.string.meal_calories), colors);
     }
 }

@@ -95,7 +95,7 @@ public class AddMealDialog extends Dialog {
                     /* TODO: Esse processo deve ser feito pelo controlador */
                     DatabaseHelper dbHelper = new DatabaseHelper(getContext());
                     /* Inserção de um novo dado no banco de dados */
-                    dbHelper.insertRow(meal);
+                    dbHelper.insertMeal(meal);
                     /* Fechar o diálogo */
                     dismiss();
                 } else {
