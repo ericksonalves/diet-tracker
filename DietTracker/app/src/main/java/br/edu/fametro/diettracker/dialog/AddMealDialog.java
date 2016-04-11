@@ -2,6 +2,7 @@ package br.edu.fametro.diettracker.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -10,8 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.edu.fametro.diettracker.R;
-import br.edu.fametro.diettracker.database.DatabaseHelper;
+import br.edu.fametro.diettracker.controller.Controller;
 import br.edu.fametro.diettracker.model.Meal;
 import br.edu.fametro.diettracker.util.Utils;
 
@@ -27,6 +31,10 @@ public class AddMealDialog extends Dialog {
     private EditText mCaloriesEditText;
     /* Entrada de texto para inserção do nome da refeição */
     private EditText mNameEditText;
+    /* Escutadores do diálogo */
+    private List<AddMealDialogListener> mListeners;
+    /* Identificador do diálogo */
+    private static final String TAG = "AddMealDialog";
 
     /* Construtor da classe */
     public AddMealDialog(Context context) {
@@ -57,6 +65,15 @@ public class AddMealDialog extends Dialog {
         mConfirmButton = (Button) findViewById(R.id.button_confirm);
         mCaloriesEditText = (EditText) findViewById(R.id.edit_text_meal_calories);
         mNameEditText = (EditText) findViewById(R.id.edit_text_meal_name);
+        mListeners = new ArrayList<>();
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                for (int i = 0; i < mListeners.size(); ++i) {
+                    mListeners.remove(i);
+                }
+            }
+        });
     }
 
     /* Método chamado ao iniciar o diálogo */
@@ -75,6 +92,10 @@ public class AddMealDialog extends Dialog {
         dissociateListeners();
     }
 
+    public void addListener(AddMealDialogListener listener) {
+        mListeners.add(listener);
+    }
+
     /* Método chamado ao criar o diálogo */
     private void assignListeners() {
         /* Liberação do escutador de clique do botão de adicionar refeição */
@@ -87,20 +108,32 @@ public class AddMealDialog extends Dialog {
                 String caloriesText = mCaloriesEditText.getText().toString();
                 /* Caso ambos não sejam vazios, inserir no banco. Caso contrário, mostrar um erro */
                 if (!name.isEmpty() && !caloriesText.isEmpty()) {
-                    /* TODO: Tratar exceção na conversão de texto para inteiro */
-                    int calories = Integer.parseInt(caloriesText);
-                    /* Instanciação de um objeto representando uma refeição */
-                    Meal meal = new Meal(name, calories, Utils.getCurrentDateTime(true), Utils.getCurrentDateTime(false));
-                    /* Instanciação do manipulador do banco de dados */
-                    /* TODO: Esse processo deve ser feito pelo controlador */
-                    DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-                    /* Inserção de um novo dado no banco de dados */
-                    dbHelper.insertMeal(meal);
-                    /* Fechar o diálogo */
-                    dismiss();
+                    int calories = -1;
+                    try {
+                        calories = Integer.parseInt(caloriesText);
+                    } catch (Exception e) {
+                        android.util.Log.e(TAG, getContext().getString(R.string.error_exception_caught), e);
+                    }
+                    if (calories != -1) {
+                        /* Instanciação de um objeto representando uma refeição */
+                        Meal meal = new Meal(name, calories, Utils.getCurrentDateTime(true), Utils.getCurrentDateTime(false));
+                        /* Inserção de um novo dado no banco de dados */
+                        Controller.getInstance().insertMealToDatabase(getContext(), meal);
+                        /* Notifica os escutadores sobre a atualização dos dados */
+                        for (AddMealDialogListener listener : mListeners) {
+                            listener.onConfirmed();
+                        }
+                        /* Fechar o diálogo */
+                        dismiss();
+                    } else {
+                        /* Mostra uma mensagem de erro */
+                        Toast.makeText(getContext(), getContext().getString(R.string.error_non_integer_calories_value), Toast.LENGTH_SHORT).show();
+                        /* Requisição do foco pela entrada de texto para o nome */
+                        mCaloriesEditText.requestFocus();
+                    }
                 } else {
                     /* Mostra uma mensagem de erro */
-                    Toast.makeText(getContext(), "Preencha todos os campos!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getContext().getString(R.string.error_empty_fields), Toast.LENGTH_SHORT).show();
                     /* Requisição do foco pela entrada de texto para o nome */
                     mNameEditText.requestFocus();
                 }
@@ -112,5 +145,9 @@ public class AddMealDialog extends Dialog {
     private void dissociateListeners() {
         /* Liberação do escutador de clique do botão de confirmar a adição da refeição */
         mConfirmButton.setOnClickListener(null);
+    }
+
+    public interface AddMealDialogListener {
+        void onConfirmed();
     }
 }

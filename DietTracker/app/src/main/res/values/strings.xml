@@ -23,4 +23,7 @@
     <string name="consumed">Consumido</string>
     <string name="to_consume">A consumir</string>
     <string name="calories_chart_center_text">Total de\ncalorias\nconsumidas</string>
+    <string name="error_empty_fields">Preencha todos os campos!</string>
+    <string name="error_non_integer_calories_value">Calorias deve ser um número inteiro!</string>
+    <string name="error_exception_caught">Exceção:</string>
 </resources>

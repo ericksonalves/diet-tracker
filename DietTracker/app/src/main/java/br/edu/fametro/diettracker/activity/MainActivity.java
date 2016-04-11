@@ -28,7 +28,7 @@ import br.edu.fametro.diettracker.util.Utils;
  * Atividade principal da aplicação
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AddMealDialog.AddMealDialogListener {
 
     /* Botão de adicionar refeição do canto inferior direito */
     private FloatingActionButton mAddMealButton;
@@ -36,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView mAmountOfCaloriesTextView;
     /* Gráfico da quantidade de calorias já consumida no dia */
     private PieChart mChart;
-    /* Classe que representa o manipulador do banco de dados */
-    private DatabaseHelper mDbHelper;
 
     /* Método chamado ao criar a atividade */
     @Override
@@ -54,9 +52,6 @@ public class MainActivity extends AppCompatActivity {
         mAddMealButton = (FloatingActionButton) findViewById(R.id.floating_action_button_add_meal);
         mAmountOfCaloriesTextView = (TextView) findViewById(R.id.text_view_amount_of_calories);
         mChart = (PieChart) findViewById(R.id.chart_calories);
-
-        /* Inicialização do manipulador do banco de dados */
-        mDbHelper = new DatabaseHelper(getApplicationContext());
     }
 
     /* Método chamado ao criar o menu da atividade */
@@ -117,18 +112,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 /* Instanciação do diálogo */
-                AddMealDialog dialog = new AddMealDialog(MainActivity.this);
+                final AddMealDialog addMealDialog = new AddMealDialog(MainActivity.this);
                 /* Mostrar diálogo */
-                dialog.show();
-                /* Configurar um escutador para quando o diálogo for fechado */
-                /* TODO: Mudar esse código para ser um escutador por uma classe */
-                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        /* TODO: Não é necessário atualizar o valor sempre */
-                        updateCalories();
-                    }
-                });
+                addMealDialog.show();
+                /* Atribui a atividade como escutadora do diálogo */
+                addMealDialog.addListener(MainActivity.this);
             }
         });
     }
@@ -158,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
     /* Método para atualizar a quantidade de calorias consumidas no texto e no gráfico */
     private void updateCalories() {
         /* Atualização dos valores de calorias consumidas pelo banco de dados */
-        int calories = mDbHelper.getDailyCalories(Utils.getCurrentDateTime(true));
+        int calories = Controller.getInstance().getAlreadyConsumedCalories(getApplicationContext());
         int totalCalories = Controller.getInstance().getTotalCalories();
         /* Atualização do texto da quantidade de calorias consumidas */
         mAmountOfCaloriesTextView.setText(String.format(getString(R.string.amount_of_calories), calories,
@@ -179,5 +167,10 @@ public class MainActivity extends AppCompatActivity {
         colors.add(ContextCompat.getColor(this, R.color.colorAccent));
         colors.add(Color.BLACK);
         Utils.setChartData(mChart, x, y, getString(R.string.meal_calories), colors);
+    }
+
+    @Override
+    public void onConfirmed() {
+        updateCalories();
     }
 }
