@@ -27,6 +27,7 @@
     <string name="calories_chart_center_text">Total de\ncalorias\nconsumidas</string>
     <string name="error_empty_fields">Preencha todos os campos!</string>
     <string name="error_non_integer_calories_value">Calorias deve ser um número inteiro!</string>
+    <string name="error_invalid_user">Usuário inválido!</string>
     <string name="error_exception_caught">Exceção:</string>
     <string name="user_settings">Configurações do Usuário</string>
     <string name="user_login">Login</string>

@@ -39,6 +39,12 @@ public class MainActivity extends AppCompatActivity implements AddMealDialog.Add
     /* Gráfico da quantidade de calorias já consumida no dia */
     private PieChart mChart;
 
+    /* Método chamado ao pressionar o botão de voltar */
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
     /* Método chamado ao criar a atividade */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements AddMealDialog.Add
 
     /* Método para atualizar o IMC atual */
     private void updateBMI() {
-        User user = Controller.getInstance().getUser(MainActivity.this);
+        User user = Controller.getInstance().getUser();
         double bmi = user.getWeight() / (user.getHeight() * user.getHeight());
         mCurrentBMITextView.setText(String.format(getString(R.string.current_bmi),
                 Utils.getTwoDecimalPlacesString(bmi),
@@ -178,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements AddMealDialog.Add
     private void updateCalories() {
         /* Atualização dos valores de calorias consumidas pelo banco de dados */
         int calories = Controller.getInstance().getAlreadyConsumedCalories(getApplicationContext());
-        int totalCalories = Controller.getInstance().getTotalCalories(this);
+        int totalCalories = Controller.getInstance().getTotalCalories();
         /* Atualização do texto da quantidade de calorias consumidas */
         mAmountOfCaloriesTextView.setText(String.format(getString(R.string.amount_of_calories), calories,
                 totalCalories));

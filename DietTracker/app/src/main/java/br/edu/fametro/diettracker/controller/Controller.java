@@ -22,7 +22,6 @@ public class Controller {
 
     /* Construtor interno do controlador */
     private Controller() {
-        mUser = null;
     }
 
     /* Método para prover a instância para uma outra classe */
@@ -46,15 +45,20 @@ public class Controller {
         mDbHelper.insertUser(user);
     }
 
-    public User getUser(Context context) {
-        if (mUser == null) {
-            /* Inicialização do manipulador do banco de dados */
-            mDbHelper = new DatabaseHelper(context);
-            /* Obtenção dos dados do banco de dados */
-            /* TODO: Obter dados da forma correta */
-            mUser = mDbHelper.getUserByLoginData("bruce", "wayne");
-        }
+    public User getUser() {
         return mUser;
+    }
+
+    public User getUser(Context context, String login, String password) {
+        /* Inicialização do manipulador do banco de dados */
+        mDbHelper = new DatabaseHelper(context);
+        /* Obtenção dos dados do banco de dados */
+        User user = mDbHelper.getUserByLoginData(login, password);
+        return user;
+    }
+
+    public void setUser(User user) {
+        mUser = user;
     }
 
     public int getAlreadyConsumedCalories(Context context) {
@@ -62,8 +66,8 @@ public class Controller {
         return mDbHelper.getDailyCalories(Utils.getCurrentDateTime(true));
     }
 
-    public int getTotalCalories(Context context) {
-        return getUser(context).getCurrentDietCalories();
+    public int getTotalCalories() {
+        return mUser.getCurrentDietCalories();
     }
 
 }

@@ -107,7 +107,7 @@ public class UserSettingsDialog extends Dialog {
 
     /* Método para preparar os dados do usuário */
     private void prepareData() {
-        User user = Controller.getInstance().getUser(getContext());
+        User user = Controller.getInstance().getUser();
         mAgeEditText.setText(String.valueOf(user.getAge()));
         mHeightEditText.setText(Utils.getTwoDecimalPlacesString(user.getHeight()));
         mNameEditText.setText(user.getName());
