@@ -1,5 +1,6 @@
 package br.edu.fametro.diettracker.util;
 
+import android.content.Context;
 import android.graphics.Color;
 
 import com.github.mikephil.charting.animation.Easing;
@@ -10,11 +11,14 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import br.edu.fametro.diettracker.R;
 
 /**
  * Classe de utilidades da aplicação
@@ -105,6 +109,29 @@ public class Utils {
         chart.invalidate();
         chart.getLegend().setEnabled(false);
         animatePieChart(chart);
+    }
+
+    /* Retorna uma informação sobre o IMC */
+    public static String getBMILabel(Context context, double bmi) {
+        int labelId;
+        if (bmi < 18) {
+            labelId = R.string.underweight;
+        } else if (bmi < 18.5) {
+            labelId = R.string.thin_for_weight;
+        } else if (bmi < 24.9) {
+            labelId = R.string.healthy_weight;
+        } else if (bmi < 29.9) {
+            labelId = R.string.overweight;
+        } else {
+            labelId = R.string.obese;
+        }
+        return context.getString(labelId);
+    }
+
+    /* Formata ponto flutuante para duas casas decimas */
+    public static String getTwoDecimalPlacesString(double value) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        return decimalFormat.format(value);
     }
 
 }

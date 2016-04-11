@@ -8,19 +8,21 @@ import android.content.Context;
 
 import br.edu.fametro.diettracker.database.DatabaseHelper;
 import br.edu.fametro.diettracker.model.Meal;
+import br.edu.fametro.diettracker.model.User;
 import br.edu.fametro.diettracker.util.Utils;
 
 public class Controller {
 
     /* Instância única do controlador */
     private static Controller mInstance = new Controller();
-    /* Constante para a quantidade máxima de calorias a serem ingeridas no dia */
-    private int mTotalCalories = 500;
     /* Classe que representa o manipulador do banco de dados */
     private DatabaseHelper mDbHelper;
+    /* Classe que representa o usuário */
+    private User mUser;
 
     /* Construtor interno do controlador */
     private Controller() {
+        mUser = null;
     }
 
     /* Método para prover a instância para uma outra classe */
@@ -36,18 +38,32 @@ public class Controller {
         mDbHelper.insertMeal(meal);
     }
 
+    /* Método para adicionar refeição na base de dados */
+    public void insertUserToDatabase(Context context, User user) {
+        /* Inicialização do manipulador do banco de dados */
+        mDbHelper = new DatabaseHelper(context);
+        /* Inserção do usuário no banco de dados */
+        mDbHelper.insertUser(user);
+    }
+
+    public User getUser(Context context) {
+        if (mUser == null) {
+            /* Inicialização do manipulador do banco de dados */
+            mDbHelper = new DatabaseHelper(context);
+            /* Obtenção dos dados do banco de dados */
+            /* TODO: Obter dados da forma correta */
+            mUser = mDbHelper.getUserByLoginData("bruce", "wayne");
+        }
+        return mUser;
+    }
+
     public int getAlreadyConsumedCalories(Context context) {
         mDbHelper = new DatabaseHelper(context);
-        int calories = mDbHelper.getDailyCalories(Utils.getCurrentDateTime(true));
-        return calories;
+        return mDbHelper.getDailyCalories(Utils.getCurrentDateTime(true));
     }
 
-    public int getTotalCalories() {
-        return mTotalCalories;
-    }
-
-    public void setTotalCalories(int calories) {
-        mTotalCalories = calories;
+    public int getTotalCalories(Context context) {
+        return getUser(context).getCurrentDietCalories();
     }
 
 }

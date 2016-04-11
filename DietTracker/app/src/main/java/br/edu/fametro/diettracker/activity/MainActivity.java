@@ -1,6 +1,5 @@
 package br.edu.fametro.diettracker.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,8 +19,9 @@ import java.util.List;
 
 import br.edu.fametro.diettracker.R;
 import br.edu.fametro.diettracker.controller.Controller;
-import br.edu.fametro.diettracker.database.DatabaseHelper;
 import br.edu.fametro.diettracker.dialog.AddMealDialog;
+import br.edu.fametro.diettracker.dialog.UserSettingsDialog;
+import br.edu.fametro.diettracker.model.User;
 import br.edu.fametro.diettracker.util.Utils;
 
 /**
@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements AddMealDialog.Add
     private FloatingActionButton mAddMealButton;
     /* Texto dizendo a quantidade de calorias já consumida no dia */
     private TextView mAmountOfCaloriesTextView;
+    /* Texto dizendo o IMC atual */
+    private TextView mCurrentBMITextView;
     /* Gráfico da quantidade de calorias já consumida no dia */
     private PieChart mChart;
 
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements AddMealDialog.Add
         /* Inicialização dos componentes visuais da atividade */
         mAddMealButton = (FloatingActionButton) findViewById(R.id.floating_action_button_add_meal);
         mAmountOfCaloriesTextView = (TextView) findViewById(R.id.text_view_amount_of_calories);
+        mCurrentBMITextView = (TextView) findViewById(R.id.text_view_current_bmi);
         mChart = (PieChart) findViewById(R.id.chart_calories);
     }
 
@@ -72,6 +75,10 @@ public class MainActivity extends AppCompatActivity implements AddMealDialog.Add
         switch (id) {
             /* Item configurações */
             case R.id.action_settings:
+                showUserSettingsDialog();
+                break;
+            /* Item relatórios */
+            case R.id.action_reports:
                 callChartsActivity();
                 break;
             /* Item sobre */
@@ -95,6 +102,8 @@ public class MainActivity extends AppCompatActivity implements AddMealDialog.Add
         prepareChart();
         /* Chamada da atualização de calorias consumidas */
         updateCalories();
+        /* Chamada da atualização do IMC */
+        updateBMI();
     }
 
     /* Método chamado ao terminar a atividade */
@@ -111,12 +120,7 @@ public class MainActivity extends AppCompatActivity implements AddMealDialog.Add
         mAddMealButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /* Instanciação do diálogo */
-                final AddMealDialog addMealDialog = new AddMealDialog(MainActivity.this);
-                /* Mostrar diálogo */
-                addMealDialog.show();
-                /* Atribui a atividade como escutadora do diálogo */
-                addMealDialog.addListener(MainActivity.this);
+                showAddMealDialog();
             }
         });
     }
@@ -143,11 +147,38 @@ public class MainActivity extends AppCompatActivity implements AddMealDialog.Add
         Utils.preparePieChart(mChart, getString(R.string.calories_chart_center_text));
     }
 
+    /* Método para mostrar o diálogo para adicionar uma refeição */
+    private void showAddMealDialog() {
+        /* Instanciação do diálogo */
+        AddMealDialog addMealDialog = new AddMealDialog(MainActivity.this);
+        /* Mostrar diálogo */
+        addMealDialog.show();
+        /* Atribui a atividade como escutadora do diálogo */
+        addMealDialog.addListener(MainActivity.this);
+    }
+
+    /* Método para mostrar o diálogo das configurações do usuário */
+    private void showUserSettingsDialog() {
+        /* Instanciação do diálogo */
+        UserSettingsDialog userSettingsDialog = new UserSettingsDialog(MainActivity.this);
+        /* Mostrar diálogo */
+        userSettingsDialog.show();
+    }
+
+    /* Método para atualizar o IMC atual */
+    private void updateBMI() {
+        User user = Controller.getInstance().getUser(MainActivity.this);
+        double bmi = user.getWeight() / (user.getHeight() * user.getHeight());
+        mCurrentBMITextView.setText(String.format(getString(R.string.current_bmi),
+                Utils.getTwoDecimalPlacesString(bmi),
+                Utils.getBMILabel(MainActivity.this, bmi)));
+    }
+
     /* Método para atualizar a quantidade de calorias consumidas no texto e no gráfico */
     private void updateCalories() {
         /* Atualização dos valores de calorias consumidas pelo banco de dados */
         int calories = Controller.getInstance().getAlreadyConsumedCalories(getApplicationContext());
-        int totalCalories = Controller.getInstance().getTotalCalories();
+        int totalCalories = Controller.getInstance().getTotalCalories(this);
         /* Atualização do texto da quantidade de calorias consumidas */
         mAmountOfCaloriesTextView.setText(String.format(getString(R.string.amount_of_calories), calories,
                 totalCalories));

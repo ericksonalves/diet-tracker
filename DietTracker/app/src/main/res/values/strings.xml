@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Diet Tracker</string>
     <string name="action_about">Sobre</string>
+    <string name="action_reports">Relatórios</string>
     <string name="action_settings">Configurações</string>
     <string name="add_meal">Adicionar Refeição</string>
     <string name="meal_name">Nome</string>
@@ -8,6 +9,7 @@
     <string name="confirm">Confirmar</string>
     <string name="welcome">Olá! Bem-vindo ao Diet Tracker</string>
     <string name="amount_of_calories">Você já consumiu %1$s de %2$s calorias diárias</string>
+    <string name="current_bmi">Seu IMC atual é %1$s e você está %2$s</string>
     <string name="about_diet_tracker">Sobre o Diet Tracker</string>
     <string name="team">Equipe</string>
     <string name="team_member_1">Adriano Bezerra</string>
@@ -26,4 +28,22 @@
     <string name="error_empty_fields">Preencha todos os campos!</string>
     <string name="error_non_integer_calories_value">Calorias deve ser um número inteiro!</string>
     <string name="error_exception_caught">Exceção:</string>
+    <string name="user_settings">Configurações do Usuário</string>
+    <string name="user_login">Login</string>
+    <string name="user_password">Senha</string>
+    <string name="user_name">Nome</string>
+    <string name="user_age">Idade</string>
+    <string name="user_weight">Peso (kg)</string>
+    <string name="user_height">Altura (m)</string>
+    <string name="user_gender">Sexo</string>
+    <string name="update_data">Atualizar Dados</string>
+    <string name="underweight">sobrepeso</string>
+    <string name="thin_for_weight">magro para sua altura</string>
+    <string name="healthy_weight">saudável</string>
+    <string name="overweight">sobrepeso</string>
+    <string name="obese">obeso</string>
+    <string-array name="gender">
+        <item>Feminino</item>
+        <item>Masculino</item>
+    </string-array>
 </resources>
