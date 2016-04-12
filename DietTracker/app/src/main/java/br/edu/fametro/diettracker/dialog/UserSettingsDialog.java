@@ -24,6 +24,8 @@ public class UserSettingsDialog extends Dialog {
     private Button mUpdateDataButton;
     /* Entrada de texto para inserção da idade do usuário */
     private EditText mAgeEditText;
+    /* Entrada de texto para inserção da dieta do usuário */
+    private EditText mCurrentDietEditText;
     /* Entrada de texto para inserção do gênero do usuário */
     private EditText mGenderEditText;
     /* Entrada de texto para inserção da altura do usuário */
@@ -65,6 +67,7 @@ public class UserSettingsDialog extends Dialog {
         /* Inicialização dos componentes visuais do diálogo */
         mUpdateDataButton = (Button) findViewById(R.id.button_update_data);
         mAgeEditText = (EditText) findViewById(R.id.edit_text_user_age);
+        mCurrentDietEditText = (EditText) findViewById(R.id.edit_text_user_current_diet);
         mHeightEditText = (EditText) findViewById(R.id.edit_text_user_height);
         mNameEditText = (EditText) findViewById(R.id.edit_text_user_name);
         mLoginEditText = (EditText) findViewById(R.id.edit_text_user_login);
@@ -109,6 +112,7 @@ public class UserSettingsDialog extends Dialog {
     private void prepareData() {
         User user = Controller.getInstance().getUser();
         mAgeEditText.setText(String.valueOf(user.getAge()));
+        mCurrentDietEditText.setText(String.valueOf(user.getCurrentDietCalories()));
         mHeightEditText.setText(Utils.getTwoDecimalPlacesString(user.getHeight()));
         mNameEditText.setText(user.getName());
         mLoginEditText.setText(user.getLogin());

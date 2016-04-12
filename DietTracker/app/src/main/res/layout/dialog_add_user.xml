@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
-        android:text="@string/user_settings"
+        android:text="@string/add_user"
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="20sp"
@@ -30,12 +30,11 @@
             android:textColor="@android:color/black"/>
 
         <EditText
-            android:id="@+id/edit_text_user_login"
+            android:id="@+id/edit_text_new_user_login"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:inputType="text"
-            android:labelFor="@id/edit_text_user_login"
+            android:labelFor="@id/edit_text_new_user_login"
             android:maxLength="10"
             android:maxLines="1"
             android:textColor="@android:color/black"
@@ -56,12 +55,36 @@
             android:textColor="@android:color/black"/>
 
         <EditText
-            android:id="@+id/edit_text_user_password"
+            android:id="@+id/edit_text_new_user_password"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:inputType="textPassword"
-            android:labelFor="@id/edit_text_user_password"
+            android:labelFor="@id/edit_text_new_user_password"
+            android:maxLength="10"
+            android:maxLines="1"
+            android:textColor="@android:color/black"
+            android:textSize="12sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="27dp"
+            android:text="@string/user_password"
+            android:textColor="@android:color/black"/>
+
+        <EditText
+            android:id="@+id/edit_text_new_user_confirm_password"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:labelFor="@id/edit_text_new_user_confirm_password"
             android:maxLength="10"
             android:maxLines="1"
             android:textColor="@android:color/black"
@@ -82,12 +105,11 @@
             android:textColor="@android:color/black"/>
 
         <EditText
-            android:id="@+id/edit_text_user_name"
+            android:id="@+id/edit_text_new_user_name"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:inputType="text"
-            android:labelFor="@id/edit_text_user_name"
+            android:labelFor="@id/edit_text_new_user_name"
             android:textColor="@android:color/black"
             android:textSize="12sp"/>
 
@@ -106,12 +128,12 @@
             android:textColor="@android:color/black"/>
 
         <EditText
-            android:id="@+id/edit_text_user_age"
+            android:id="@+id/edit_text_new_user_age"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="30dp"
             android:inputType="number"
-            android:labelFor="@id/edit_text_user_age"
+            android:labelFor="@id/edit_text_new_user_age"
             android:textColor="@android:color/black"
             android:textSize="12sp"/>
 
@@ -130,11 +152,11 @@
             android:textColor="@android:color/black"/>
 
         <EditText
-            android:id="@+id/edit_text_user_weight"
+            android:id="@+id/edit_text_new_user_weight"
             android:layout_width="75dp"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
-            android:labelFor="@id/edit_text_user_weight"
+            android:labelFor="@id/edit_text_new_user_weight"
             android:textColor="@android:color/black"
             android:textSize="12sp"/>
 
@@ -153,11 +175,11 @@
             android:textColor="@android:color/black"/>
 
         <EditText
-            android:id="@+id/edit_text_user_height"
+            android:id="@+id/edit_text_new_user_height"
             android:layout_width="75dp"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
-            android:labelFor="@id/edit_text_user_height"
+            android:labelFor="@id/edit_text_new_user_height"
             android:textColor="@android:color/black"
             android:textSize="12sp"/>
 
@@ -175,15 +197,14 @@
             android:text="@string/user_gender"
             android:textColor="@android:color/black"/>
 
-        <EditText
-            android:id="@+id/edit_text_user_gender"
-            android:layout_width="100dp"
+        <Spinner
+            android:id="@+id/spinner_new_user_gender"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:enabled="false"
-            android:inputType="text"
-            android:labelFor="@id/edit_text_user_gender"
+            android:entries="@array/gender"
             android:textColor="@android:color/black"
             android:textSize="12sp"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -199,20 +220,19 @@
             android:textColor="@android:color/black"/>
 
         <EditText
-            android:id="@+id/edit_text_user_current_diet"
+            android:id="@+id/edit_text_new_user_current_diet"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:labelFor="@id/edit_text_user_current_diet"
+            android:inputType="number"
+            android:labelFor="@id/edit_text_new_user_current_diet"
             android:textColor="@android:color/black"
             android:textSize="12sp"/>
     </LinearLayout>
 
-
     <Button
-        android:id="@+id/button_update_data"
+        android:id="@+id/button_save_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/update_data"/>
+        android:text="@string/save_data"/>
 
 </LinearLayout>

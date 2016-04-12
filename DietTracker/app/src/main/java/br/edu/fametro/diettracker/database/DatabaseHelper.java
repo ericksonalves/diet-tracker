@@ -9,6 +9,7 @@ import android.provider.BaseColumns;
 
 import br.edu.fametro.diettracker.model.Meal;
 import br.edu.fametro.diettracker.model.User;
+import br.edu.fametro.diettracker.util.Utils;
 
 /*
  * Classe para auxiliar a manipulação do banco de dados
@@ -73,11 +74,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "users, " +
             "measurements, diets WHERE users.login='%1$s' AND password='%2$s' AND users.login = measurements" +
             ".user_login AND users.login = diets.login";
-    private static final String SQL_INSERT_MOCK_DIET = "INSERT INTO diets VALUES (null, 'bruce', 1000, '10/04/2016');";
-    private static final String SQL_INSERT_MOCK_MEASUREMENTS = "INSERT INTO measurements VALUES (null, 'bruce', " +
-            "17, 70, 1.7, 'Masculino');";
-    private static final String SQL_INSERT_MOCK_USER = "INSERT INTO users VALUES (null, 'bruce', 'wayne', " +
-            "'Bruce Wayne')";
     private static final String SELECT_BY_DATE_ARG = "date=?";
 
     /* Construtor do banco de dados */
@@ -92,9 +88,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_USERS);
         db.execSQL(SQL_CREATE_DIETS);
         db.execSQL(SQL_CREATE_MEASUREMENTS);
-        db.execSQL(SQL_INSERT_MOCK_USER);
-        db.execSQL(SQL_INSERT_MOCK_DIET);
-        db.execSQL(SQL_INSERT_MOCK_MEASUREMENTS);
     }
 
     /* Evento iniciado ao atualizar o banco */
@@ -121,6 +114,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /* Inserir um usuário no banco */
     public void insertUser(User user) {
         SQLiteDatabase database = getWritableDatabase();
+        ContentValues dietValues = new ContentValues();
         ContentValues measurementsValues = new ContentValues();
         ContentValues userValues = new ContentValues();
         userValues.put(UserTable.COLUMN_NAME_LOGIN, user.getLogin());
@@ -133,6 +127,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         measurementsValues.put(MeasurementsTable.COLUMN_NAME_LOGIN, user.getLogin());
         measurementsValues.put(MeasurementsTable.COLUMN_NAME_WEIGHT, user.getWeight());
         database.insert(MeasurementsTable.TABLE_NAME, null, measurementsValues);
+        dietValues.put(DietTable.COLUMN_NAME_LOGIN, user.getLogin());
+        dietValues.put(DietTable.COLUMN_NAME_CALORIES, user.getCurrentDietCalories());
+        dietValues.put(DietTable.COLUMN_NAME_DATE, Utils.getCurrentDateTime(true));
+        database.insert(DietTable.TABLE_NAME, null, dietValues);
     }
 
     /* Obter o total de calorias consumidas no dia especificado */

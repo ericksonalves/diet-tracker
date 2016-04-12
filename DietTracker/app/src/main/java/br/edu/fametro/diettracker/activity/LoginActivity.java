@@ -1,21 +1,21 @@
 package br.edu.fametro.diettracker.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.ResourceBundle;
-
 import br.edu.fametro.diettracker.R;
 import br.edu.fametro.diettracker.controller.Controller;
+import br.edu.fametro.diettracker.dialog.AddUserDialog;
 import br.edu.fametro.diettracker.model.User;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private Button mAddUserButton;
     private Button mLoginButton;
     private EditText mLoginEditText;
     private EditText mPasswordEditText;
@@ -24,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mAddUserButton = (Button) findViewById(R.id.button_add_user);
         mLoginButton = (Button) findViewById(R.id.button_login);
         mLoginEditText = (EditText) findViewById(R.id.edit_text_login);
         mPasswordEditText = (EditText) findViewById(R.id.edit_text_password);
@@ -43,6 +44,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void assignListeners() {
+        mAddUserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddUserDialog addUserDialog = new AddUserDialog(LoginActivity.this);
+                addUserDialog.show();
+            }
+        });
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void dissociateListeners() {
+        mAddUserButton.setOnClickListener(null);
         mLoginButton.setOnClickListener(null);
     }
 

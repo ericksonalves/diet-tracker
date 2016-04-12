@@ -28,6 +28,7 @@
     <string name="error_empty_fields">Preencha todos os campos!</string>
     <string name="error_non_integer_calories_value">Calorias deve ser um número inteiro!</string>
     <string name="error_invalid_user">Usuário inválido!</string>
+    <string name="error_invalid_data">Dados inválidos!</string>
     <string name="error_exception_caught">Exceção:</string>
     <string name="user_settings">Configurações do Usuário</string>
     <string name="user_login">Login</string>
@@ -37,13 +38,18 @@
     <string name="user_weight">Peso (kg)</string>
     <string name="user_height">Altura (m)</string>
     <string name="user_gender">Sexo</string>
+    <string name="user_current_diet">Dieta</string>
     <string name="update_data">Atualizar Dados</string>
+    <string name="access">Acessar</string>
+    <string name="add_user">Novo Usuário</string>
+    <string name="save_data">Salvar Dados</string>
     <string name="underweight">sobrepeso</string>
     <string name="thin_for_weight">magro para sua altura</string>
     <string name="healthy_weight">saudável</string>
     <string name="overweight">sobrepeso</string>
     <string name="obese">obeso</string>
     <string name="exit_confirmation">Pressione Voltar para fazer logoff</string>
+    <string name="added_user_confirmation">Usuário cadastrado com sucesso!</string>
     <string-array name="gender">
         <item>Feminino</item>
         <item>Masculino</item>
