@@ -3,7 +3,9 @@ package br.edu.fametro.diettracker.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.PieChart;
 
@@ -30,19 +33,36 @@ import br.edu.fametro.diettracker.util.Utils;
 
 public class MainActivity extends AppCompatActivity implements AddMealDialog.AddMealDialogListener {
 
+    /* Tempo para sair */
+    private final int TIMEOUT = 3000;
+    /* Variável lógica para checar saída da aplicação */
+    private boolean mShouldExit;
     /* Botão de adicionar refeição do canto inferior direito */
     private FloatingActionButton mAddMealButton;
     /* Texto dizendo a quantidade de calorias já consumida no dia */
     private TextView mAmountOfCaloriesTextView;
     /* Texto dizendo o IMC atual */
     private TextView mCurrentBMITextView;
+    /* Texto de boas vindas */
+    private TextView mWelcomeTextView;
     /* Gráfico da quantidade de calorias já consumida no dia */
     private PieChart mChart;
 
     /* Método chamado ao pressionar o botão de voltar */
     @Override
     public void onBackPressed() {
-        finish();
+        if (mShouldExit) {
+            finish();
+        } else {
+            Toast.makeText(this, getString(R.string.exit_confirmation), Toast.LENGTH_SHORT).show();
+            mShouldExit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mShouldExit = false;
+                }
+            }, TIMEOUT);
+        }
     }
 
     /* Método chamado ao criar a atividade */
@@ -60,7 +80,9 @@ public class MainActivity extends AppCompatActivity implements AddMealDialog.Add
         mAddMealButton = (FloatingActionButton) findViewById(R.id.floating_action_button_add_meal);
         mAmountOfCaloriesTextView = (TextView) findViewById(R.id.text_view_amount_of_calories);
         mCurrentBMITextView = (TextView) findViewById(R.id.text_view_current_bmi);
+        mWelcomeTextView = (TextView) findViewById(R.id.text_view_welcome);
         mChart = (PieChart) findViewById(R.id.chart_calories);
+        mShouldExit = false;
     }
 
     /* Método chamado ao criar o menu da atividade */
@@ -110,6 +132,8 @@ public class MainActivity extends AppCompatActivity implements AddMealDialog.Add
         updateCalories();
         /* Chamada da atualização do IMC */
         updateBMI();
+        /* Chamada da atualização do texto de boas vindas */
+        updateWelcomeText();
     }
 
     /* Método chamado ao terminar a atividade */
@@ -204,6 +228,10 @@ public class MainActivity extends AppCompatActivity implements AddMealDialog.Add
         colors.add(ContextCompat.getColor(this, R.color.colorAccent));
         colors.add(Color.BLACK);
         Utils.setChartData(mChart, x, y, getString(R.string.meal_calories), colors);
+    }
+
+    private void updateWelcomeText() {
+        mWelcomeTextView.setText(String.format(getString(R.string.welcome), Controller.getInstance().getUser().getName()));
     }
 
     @Override

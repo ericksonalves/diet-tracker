@@ -54,6 +54,14 @@ public class Utils {
     private static final int ROTATION_ANGLE = 0;
     /* Duração da animação do gráfico */
     private static final int ANIMATION_DURATION = 1500;
+    /* Constante para IMC abaixo do peso */
+    private static final double UNDERWEIGHT_THRESHOLD = 18;
+    /* Constante para IMC magro para o peso */
+    private static final double THIN_THRESHOLD = 18.5;
+    /* Constante para IMC saudável */
+    private static final double HEALTHY_THRESHOLD = 24.9;
+    /* Constante para IMC sobrepeso */
+    private static final double OVERWEIGHT_THRESHOLD = 29.9;
 
     /* Retorna a data atual ou o horário atual */
     public static String getCurrentDateTime(boolean isDate) {
@@ -114,13 +122,13 @@ public class Utils {
     /* Retorna uma informação sobre o IMC */
     public static String getBMILabel(Context context, double bmi) {
         int labelId;
-        if (bmi < 18) {
+        if (bmi < UNDERWEIGHT_THRESHOLD) {
             labelId = R.string.underweight;
-        } else if (bmi < 18.5) {
+        } else if (bmi < THIN_THRESHOLD) {
             labelId = R.string.thin_for_weight;
-        } else if (bmi < 24.9) {
+        } else if (bmi < HEALTHY_THRESHOLD) {
             labelId = R.string.healthy_weight;
-        } else if (bmi < 29.9) {
+        } else if (bmi < OVERWEIGHT_THRESHOLD) {
             labelId = R.string.overweight;
         } else {
             labelId = R.string.obese;

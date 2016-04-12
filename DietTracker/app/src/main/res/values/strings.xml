@@ -7,7 +7,7 @@
     <string name="meal_name">Nome</string>
     <string name="meal_calories">Calorias</string>
     <string name="confirm">Confirmar</string>
-    <string name="welcome">Olá! Bem-vindo ao Diet Tracker</string>
+    <string name="welcome">Olá, %1$s! Bem-vindo ao Diet Tracker</string>
     <string name="amount_of_calories">Você já consumiu %1$s de %2$s calorias diárias</string>
     <string name="current_bmi">Seu IMC atual é %1$s e você está %2$s</string>
     <string name="about_diet_tracker">Sobre o Diet Tracker</string>
@@ -19,7 +19,7 @@
     <string name="adviser">Orientador</string>
     <string name="team_adviser">Prof. Rilmar</string>
     <string name="course">Curso</string>
-    <string name="course_name">Análise e Desenvolvimento de Sistemas</string>
+    <string name="course_name">Sistemas de Informação</string>
     <string name="class_name">Turma</string>
     <string name="class_year">2016/1</string>
     <string name="consumed">Consumido</string>
@@ -43,6 +43,7 @@
     <string name="healthy_weight">saudável</string>
     <string name="overweight">sobrepeso</string>
     <string name="obese">obeso</string>
+    <string name="exit_confirmation">Pressione Voltar para fazer logoff</string>
     <string-array name="gender">
         <item>Feminino</item>
         <item>Masculino</item>

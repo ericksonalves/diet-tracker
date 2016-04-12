@@ -33,13 +33,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         assignListeners();
+        setupUI();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         dissociateListeners();
-        finish();
     }
 
     private void assignListeners() {
@@ -70,5 +70,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private void dissociateListeners() {
         mLoginButton.setOnClickListener(null);
+    }
+
+    private void setupUI() {
+        mLoginEditText.setText("");
+        mPasswordEditText.setText("");
+        mLoginEditText.requestFocus();
     }
 }
