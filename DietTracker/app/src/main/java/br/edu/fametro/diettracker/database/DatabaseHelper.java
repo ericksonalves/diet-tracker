@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.edu.fametro.diettracker.model.Meal;
 import br.edu.fametro.diettracker.model.User;
 import br.edu.fametro.diettracker.util.Utils;
@@ -41,10 +44,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_MEALS =
             "CREATE TABLE " + MealTable.TABLE_NAME +
                     " (" + MealTable._ID + INTEGER_PRIMARY_KEY_TYPE + COMMA_SEPARATOR +
+                    MealTable.COLUMN_NAME_LOGIN + TEXT_TYPE + COMMA_SEPARATOR +
                     MealTable.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEPARATOR +
                     MealTable.COLUMN_NAME_CALORIES + INTEGER_TYPE + COMMA_SEPARATOR +
                     MealTable.COLUMN_NAME_DATE + TEXT_TYPE + COMMA_SEPARATOR +
-                    MealTable.COLUMN_NAME_TIME + TEXT_TYPE + " )";
+                    MealTable.COLUMN_NAME_TIME + TEXT_TYPE + COMMA_SEPARATOR +
+                    FOREIGN_KEY + "(" + MealTable.COLUMN_NAME_LOGIN + ")" + REFERENCES + " " +
+                    UserTable.TABLE_NAME + "(" + UserTable.COLUMN_NAME_LOGIN + ")" + " )";
     private static final String SQL_CREATE_MEASUREMENTS =
             "CREATE TABLE " + MeasurementsTable.TABLE_NAME +
                     " (" + MeasurementsTable._ID + INTEGER_PRIMARY_KEY_TYPE + COMMA_SEPARATOR +
@@ -74,7 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "users, " +
             "measurements, diets WHERE users.login='%1$s' AND password='%2$s' AND users.login = measurements" +
             ".user_login AND users.login = diets.login";
-    private static final String SELECT_BY_DATE_ARG = "date=?";
+    private static final String SELECT_BY_DATE_AND_LOGIN_ARG = "date=? AND login=?";
 
     /* Construtor do banco de dados */
     public DatabaseHelper(Context context) {
@@ -104,6 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertMeal(Meal meal) {
         SQLiteDatabase database = getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(MealTable.COLUMN_NAME_LOGIN, meal.getLogin());
         values.put(MealTable.COLUMN_NAME_NAME, meal.getName());
         values.put(MealTable.COLUMN_NAME_CALORIES, meal.getCalories());
         values.put(MealTable.COLUMN_NAME_DATE, meal.getDate());
@@ -134,12 +141,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /* Obter o total de calorias consumidas no dia especificado */
-    public int getDailyCalories(String date) {
+    public int getDailyCalories(String login, String date) {
         SQLiteDatabase database = getReadableDatabase();
-        String[] args = {date};
+        String[] args = {date, login};
         /* Consulta o banco */
         Cursor cursor = database.query(MealTable.TABLE_NAME, MealTable.PROJECTION,
-                SELECT_BY_DATE_ARG, args,
+                SELECT_BY_DATE_AND_LOGIN_ARG, args,
                 null, null, null);
         cursor.moveToFirst();
         /* Iteração sobre os itens obtidos do banco */
@@ -174,6 +181,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return user;
     }
 
+    /* Obter as refeições adicionadas por todos os usuários da aplicação */
+    public List<Meal> getMeals() {
+        List<Meal> meals = new ArrayList<>();
+        SQLiteDatabase database = getReadableDatabase();
+        /* Consulta o banco */
+        Cursor cursor = database.query(MealTable.TABLE_NAME, MealTable.PROJECTION, null, null, null, null, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            String name = cursor.getString(cursor.getColumnIndex(MealTable.COLUMN_NAME_NAME));
+            int calories = cursor.getInt(cursor.getColumnIndex(MealTable.COLUMN_NAME_CALORIES));
+            String date = cursor.getString(cursor.getColumnIndex(MealTable.COLUMN_NAME_DATE));
+            String time = cursor.getString(cursor.getColumnIndex(MealTable.COLUMN_NAME_TIME));
+            Meal meal = new Meal("", name, calories, date, time);
+            boolean isNew = true;
+            for (Meal m : meals) {
+                if (m.getName().equals(meal.getName())) {
+                    isNew = false;
+                    break;
+                }
+            }
+            if (isNew) {
+                meals.add(meal);
+            }
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return meals;
+    }
+
     /* Classe que representa a tabela de dieta */
     private static class DietTable implements BaseColumns {
         public static final String TABLE_NAME = "diets";
@@ -185,11 +221,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /* Classe que representa a tabela de refeições */
     private static class MealTable implements BaseColumns {
         public static final String TABLE_NAME = "meals";
+        public static final String COLUMN_NAME_LOGIN = "login";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_CALORIES = "calories";
         public static final String COLUMN_NAME_DATE = "date";
         public static final String COLUMN_NAME_TIME = "time";
         public static final String[] PROJECTION = {_ID,
+                COLUMN_NAME_LOGIN,
                 COLUMN_NAME_NAME,
                 COLUMN_NAME_CALORIES,
                 COLUMN_NAME_DATE,

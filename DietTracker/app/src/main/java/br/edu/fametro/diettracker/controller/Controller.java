@@ -6,6 +6,8 @@ package br.edu.fametro.diettracker.controller;
 
 import android.content.Context;
 
+import java.util.List;
+
 import br.edu.fametro.diettracker.database.DatabaseHelper;
 import br.edu.fametro.diettracker.model.Meal;
 import br.edu.fametro.diettracker.model.User;
@@ -63,11 +65,16 @@ public class Controller {
 
     public int getAlreadyConsumedCalories(Context context) {
         mDbHelper = new DatabaseHelper(context);
-        return mDbHelper.getDailyCalories(Utils.getCurrentDateTime(true));
+        return mDbHelper.getDailyCalories(mUser.getLogin(), Utils.getCurrentDateTime(true));
     }
 
     public int getTotalCalories() {
         return mUser.getCurrentDietCalories();
+    }
+
+    public List<Meal> getMeals(Context context) {
+        mDbHelper = new DatabaseHelper(context);
+        return mDbHelper.getMeals();
     }
 
 }

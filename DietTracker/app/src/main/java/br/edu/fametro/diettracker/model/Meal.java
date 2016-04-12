@@ -4,16 +4,26 @@ package br.edu.fametro.diettracker.model;
 
 public class Meal {
 
+    private String login;
     private String name;
     private int calories;
     private String date;
     private String time;
 
-    public Meal(String name, int calories, String date, String time) {
+    public Meal(String login, String name, int calories, String date, String time) {
+        setLogin(login);
         setName(name);
         setCalories(calories);
         setDate(date);
         setTime(time);
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public String getName() {
@@ -46,5 +56,10 @@ public class Meal {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
