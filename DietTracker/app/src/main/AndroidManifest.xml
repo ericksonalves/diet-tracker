@@ -17,8 +17,7 @@
         </activity>
         <activity android:name=".activity.ChartsActivity">
         </activity>
-        <activity
-            android:name=".activity.SplashScreen">
+        <activity android:name=".activity.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -26,6 +25,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.LoginActivity">
+        </activity>
+        <activity android:name=".activity.MealsActivity">
+        </activity>
+        <activity android:name=".activity.SearchMealsActivity">
         </activity>
     </application>
 

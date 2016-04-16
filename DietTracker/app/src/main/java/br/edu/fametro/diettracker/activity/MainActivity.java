@@ -108,6 +108,9 @@ public class MainActivity extends AppCompatActivity implements AddMealDialog.Add
             case R.id.action_reports:
                 callChartsActivity();
                 break;
+            case R.id.action_meals:
+                callMealsActivity();
+                break;
             /* Item sobre */
             case R.id.action_about:
                 callAboutActivity();
@@ -163,6 +166,12 @@ public class MainActivity extends AppCompatActivity implements AddMealDialog.Add
     /* Método para chamar a atividade Gráficos */
     private void callChartsActivity() {
         Intent intent = new Intent(this, ChartsActivity.class);
+        startActivity(intent);
+    }
+
+    /* Método para chamar a atividade Refeições */
+    private void callMealsActivity() {
+        Intent intent = new Intent(this, MealsActivity.class);
         startActivity(intent);
     }
 

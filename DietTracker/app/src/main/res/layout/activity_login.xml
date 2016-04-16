@@ -69,16 +69,18 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/access"/>
-
-        <Button
             android:id="@+id/button_add_user"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_user"/>
+
+        <Button
+            android:id="@+id/button_login"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/access"/>
 
     </LinearLayout>
 

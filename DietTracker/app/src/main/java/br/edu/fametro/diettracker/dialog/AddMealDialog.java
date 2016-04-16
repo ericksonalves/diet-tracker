@@ -7,10 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -25,18 +23,17 @@ import br.edu.fametro.diettracker.util.Utils;
  * Diálogo para adicionar uma refeição ao controle de calorias
  */
 
-public class AddMealDialog extends Dialog {
+public class AddMealDialog extends Dialog implements SearchMealsDialog.SearchMealDialogListener {
 
     /* Botão para confirmar a adição da refeição ao banco de dados */
     private Button mConfirmButton;
+    private Button mSearchMealButton;
     /* Entrada de texto para inserção do número de calorias */
     private EditText mCaloriesEditText;
     /* Entrada de texto para inserção do nome da refeição */
     private EditText mNameEditText;
     /* Escutadores do diálogo */
     private List<AddMealDialogListener> mListeners;
-    /* Seletor */
-    private Spinner mMealsSpinner;
     /* Identificador do diálogo */
     private static final String TAG = "AddMealDialog";
 
@@ -67,8 +64,8 @@ public class AddMealDialog extends Dialog {
         window.setAttributes(layoutParams);
         /* Inicialização dos componentes visuais do diálogo */
         mConfirmButton = (Button) findViewById(R.id.button_confirm);
+        mSearchMealButton = (Button) findViewById(R.id.button_search_meal);
         mCaloriesEditText = (EditText) findViewById(R.id.edit_text_meal_calories);
-        mMealsSpinner = (Spinner) findViewById(R.id.spinner_meals);
         mNameEditText = (EditText) findViewById(R.id.edit_text_meal_name);
         mListeners = new ArrayList<>();
         setOnDismissListener(new OnDismissListener() {
@@ -87,7 +84,6 @@ public class AddMealDialog extends Dialog {
         super.onStart();
         /* Chamada da atribuição de escutadores */
         assignListeners();
-        updateUI();
     }
 
     /* Método chamado ao terminar o diálogo */
@@ -122,7 +118,7 @@ public class AddMealDialog extends Dialog {
                     }
                     if (calories != -1) {
                         /* Instanciação de um objeto representando uma refeição */
-                        Meal meal = new Meal(Controller.getInstance().getUser().getLogin(), name, calories,
+                        Meal meal = new Meal(Controller.getInstance().getUser().getLogin(), name, "amount", calories,
                                 Utils.getCurrentDateTime(true), Utils.getCurrentDateTime(false));
                         /* Inserção de um novo dado no banco de dados */
                         Controller.getInstance().insertMealToDatabase(getContext(), meal);
@@ -138,17 +134,6 @@ public class AddMealDialog extends Dialog {
                         /* Requisição do foco pela entrada de texto para o nome */
                         mCaloriesEditText.requestFocus();
                     }
-                } else if (mMealsSpinner.getSelectedItemPosition() >= 0) {
-                    Meal meal = (Meal) mMealsSpinner.getAdapter().getItem(mMealsSpinner.getSelectedItemPosition());
-                    meal.setLogin(Controller.getInstance().getUser().getLogin());
-                    meal.setDate(Utils.getCurrentDateTime(true));
-                    meal.setTime(Utils.getCurrentDateTime(false));
-                    Controller.getInstance().insertMealToDatabase(getContext(), meal);
-                    /* Notifica os escutadores sobre a atualização dos dados */
-                    for (AddMealDialogListener listener : mListeners) {
-                        listener.onConfirmed();
-                    }
-                    dismiss();
                 } else {
                     /* Mostra uma mensagem de erro */
                     Toast.makeText(getContext(), getContext().getString(R.string.error_empty_fields), Toast.LENGTH_SHORT).show();
@@ -157,21 +142,32 @@ public class AddMealDialog extends Dialog {
                 }
             }
         });
+        mSearchMealButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SearchMealsDialog searchMealsDialog = new SearchMealsDialog(getContext(), AddMealDialog.this);
+                searchMealsDialog.show();
+            }
+        });
     }
 
     /* Método para desassociar os escutadores no diálogo */
     private void dissociateListeners() {
         /* Liberação do escutador de clique do botão de confirmar a adição da refeição */
         mConfirmButton.setOnClickListener(null);
+        mSearchMealButton.setOnClickListener(null);
     }
 
-    /* */
-    private void updateUI() {
-        List<Meal> meals = Controller.getInstance().getMeals(getContext());
-        ArrayAdapter<Meal> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item,
-                meals);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mMealsSpinner.setAdapter(adapter);
+    @Override
+    public void onMealSelected(Meal meal) {
+        meal.setDate(Utils.getCurrentDateTime(true));
+        meal.setTime(Utils.getCurrentDateTime(false));
+        meal.setLogin(Controller.getInstance().getUser().getLogin());
+        Controller.getInstance().insertMealToDatabase(getContext(), meal);
+        for (AddMealDialogListener listener : mListeners) {
+            listener.onConfirmed();
+        }
+        dismiss();
     }
 
     public interface AddMealDialogListener {
